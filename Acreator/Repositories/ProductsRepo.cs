@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Acreator.Data;
 using Acreator.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -53,6 +57,9 @@ namespace Acreator.Repositories
 
         public async Task<RepoResponse<bool>> AddProduct([FromForm]ProductAddDto newProduct)
         {
+            string filePath = UploadImage(newProduct.Image, newProduct.Name);
+
+            newProduct.ImageUrl = filePath;
             var newP = new Product()
             {
                 ImageUrl = newProduct.ImageUrl,
@@ -88,7 +95,7 @@ namespace Acreator.Repositories
         {
             var existingProduct = await _context.Products
                 .Include(p => p.Measurement)
-                .FirstOrDefaultAsync(predicate => predicate.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (existingProduct == null)
             {
@@ -105,7 +112,29 @@ namespace Acreator.Repositories
             existingProduct.Type = updatedProduct.Type;
             existingProduct.Measurement.Width = updatedProduct.Width;
             existingProduct.Measurement.Height = updatedProduct.Height;
+            if (updatedProduct.Image != null)
+            {
+                string imageUrl = UploadImage(updatedProduct.Image, updatedProduct.Name);
+                existingProduct.ImageUrl = imageUrl;
+            }
 
+            var res = await _context.SaveChangesAsync();
+            if (res > 0)
+            {
+                return new RepoResponse<bool>()
+                {
+                    Content = true,
+                    IsSuccess = true,
+                    StatusCode = 200
+                };
+            }
+
+            return new RepoResponse<bool>()
+            {
+                Content = false,
+                IsSuccess = false,
+                StatusCode = 500
+            };
         }
 
         public async Task<RepoResponse<bool>> DeleteProduct(int id)
@@ -140,6 +169,41 @@ namespace Acreator.Repositories
                 IsSuccess = false,
                 StatusCode = 500
             };
+        }
+
+        private string UploadImage(IFormFile image, string product_name)
+        {
+            string filePath;
+            try
+            {
+                var file = image;
+                var folderName = Path.Combine("Resources", "Images");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+
+                if (file.Length > 0)
+                {
+                    var oldFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    var fileName = string.Join('.', product_name.ToLower().Replace(' ', '_'), oldFileName.Split('.')[^1]);
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    var dbPath = Path.Combine(folderName, fileName);
+
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    filePath = dbPath;
+                }
+                else
+                {
+                    filePath = "no_image";
+                }
+            }
+            catch (Exception)
+            {
+                filePath = "image_upload_error";
+            }
+
+            return filePath;
         }
     }
 }

@@ -33,39 +33,23 @@ namespace Acreator.Controllers
             return new JsonResult(new { error_code = repoResponse.StatusCode, status = 1 });
         }
 
-        [HttpPost("new")]
-        public async Task<IActionResult> AddProduct([FromForm]ProductAddDto p)
+        [HttpGet("{id}")]
+        public async Task<JsonResult> GetProduct(int id)
         {
-            string filePath;
-            try
-            {
-                var file = Request.Form.Files[0];
-                var folderName = Path.Combine("Resources", "Images");
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            var repoResponse = await _repo.GetProduct(id);
 
-                if (file.Length > 0)
-                {
-                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    var fullPath = Path.Combine(pathToSave, fileName);
-                    var dbPath = Path.Combine(folderName, fileName);
-
-                    using (var stream = new FileStream(fullPath, FileMode.Create))
-                    {
-                        file.CopyTo(stream);
-                    }
-                    filePath = dbPath;
-                }
-                else
-                {
-                    filePath = "no_image";
-                }
-            }
-            catch (Exception)
+            Response.StatusCode = repoResponse.StatusCode;
+            if (repoResponse.IsSuccess)
             {
-                filePath = "image_upload_error";
+                return new JsonResult(new { data = repoResponse.Content, status = 0 });
             }
 
-            p.ImageUrl = filePath;
+            return new JsonResult(new { error_code = repoResponse.StatusCode, status = 1 });
+        }
+
+        [HttpPost("new")]
+        public async Task<IActionResult> AddProduct([FromForm] ProductAddDto p)
+        {
             var repoResponse = await _repo.AddProduct(p);
 
             if (repoResponse.IsSuccess)
@@ -75,6 +59,34 @@ namespace Acreator.Controllers
             }
 
             Response.StatusCode = repoResponse.StatusCode;
+            return new JsonResult(new { error_code = repoResponse.StatusCode, status = 1 });
+        }
+
+        [HttpPost("update/{id}")]
+        public async Task<IActionResult> UpdateProduct(int id, [FromForm] ProductAddDto p)
+        {
+            var repoResponse = await _repo.UpdateProduct(id, p);
+
+            Response.StatusCode = repoResponse.StatusCode;
+            if (repoResponse.IsSuccess)
+            {
+                return new JsonResult(new { data = "updated", status = 0 });
+            }
+
+            return new JsonResult(new { error_code = repoResponse.StatusCode, status = 1 });
+        }
+
+        [HttpPost("delete/{id}")]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            var repoResponse = await _repo.DeleteProduct(id);
+
+            Response.StatusCode = repoResponse.StatusCode;
+            if (repoResponse.IsSuccess)
+            {
+                return new JsonResult(new { data = "deleted", status = 0 });
+            }
+
             return new JsonResult(new { error_code = repoResponse.StatusCode, status = 1 });
         }
     }

@@ -18,6 +18,10 @@ namespace Acreator
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+                .ConfigureWebHostDefaults(webBuilder => 
+                { 
+                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseKestrel(options => options.AddServerHeader = false);
+                });
     }
 }
