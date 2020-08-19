@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Acreator.Data;
@@ -204,6 +205,30 @@ namespace Acreator.Repositories
             }
 
             return filePath;
+        }
+
+        public async Task<RepoResponse<List<Product>>> GetFiltered(ProductType type)
+        {
+            var products = await _context.Products
+                .Include(p => p.Measurement)
+                .Where(p => p.Type == type)
+                .ToListAsync();
+
+            if (products != null)
+            {
+                return new RepoResponse<List<Product>>()
+                {
+                    Content = products,
+                    IsSuccess = true
+                };
+            }
+            
+            return new RepoResponse<List<Product>>()
+            {
+                Content = null,
+                IsSuccess = false,
+                StatusCode = 404
+            };
         }
     }
 }

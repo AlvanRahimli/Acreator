@@ -7,6 +7,7 @@ namespace Acreator.Repositories
     public interface IProductsRepo
     {
         Task<RepoResponse<List<Product>>> GetProducts();
+        Task<RepoResponse<List<Product>>> GetFiltered(ProductType type);
         Task<RepoResponse<Product>> GetProduct(int id);
         Task<RepoResponse<bool>> AddProduct(ProductAddDto newProduct);
         Task<RepoResponse<bool>> UpdateProduct(int id, ProductAddDto updatedProduct);

@@ -15,5 +15,7 @@ namespace Acreator.Data
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Measurement> Measurements { get; set; }
+        public DbSet<Admin> Admins { get; set; }
+        public DbSet<Order> Orders { get; set; }
     }
 }
