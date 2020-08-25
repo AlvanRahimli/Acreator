@@ -113,6 +113,7 @@ namespace Acreator.Repositories
         public async Task<RepoResponse<Order>> GetOrder(int id)
         {
             var order = await _context.Orders
+                .Include(o => o.Product)
                 .FirstOrDefaultAsync(p => p.Id == id);
             
             if (order == null)
@@ -136,6 +137,7 @@ namespace Acreator.Repositories
         public async Task<RepoResponse<List<Order>>> GetOrders()
         {
             var orders = await _context.Orders
+                .Include(o => o.Product)
                 .ToListAsync();
             
             if (orders == null)

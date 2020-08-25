@@ -58,6 +58,9 @@ namespace Acreator.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Area")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Contact")
                         .HasColumnType("TEXT");
 
@@ -66,6 +69,9 @@ namespace Acreator.Migrations
 
                     b.Property<string>("Details")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("FinalPrice")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("INTEGER");

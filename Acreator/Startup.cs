@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -31,10 +32,20 @@ namespace Acreator
         {
             this._config = configuration;
         }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
+        
         public void ConfigureServices(IServiceCollection services)
         {
+	    services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .Build();
+                });
+            });
+		
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -54,7 +65,7 @@ namespace Acreator
 
             services.AddDbContext<AppDbContext>(options =>
             {
-                // options.UseMySql(Configuration.GetConnectionString("MySql"));
+                // options.UseMySql(_config.GetConnectionString("MySql"));
                 options.UseSqlite("Data source=appdb.db");
             });
 
@@ -69,7 +80,6 @@ namespace Acreator
             services.AddScoped<IOrdersRepo, OrdersRepo>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.Use(async (context, next) =>
@@ -83,7 +93,6 @@ namespace Acreator
                 app.UseDeveloperExceptionPage();
             }
 
-            // app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions()
             {
@@ -93,6 +102,13 @@ namespace Acreator
 
             app.UseRouting();
 
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+	    
+
+	    app.UseCors("CorsPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
 

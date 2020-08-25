@@ -26,19 +26,22 @@ namespace Acreator.Repositories
             var products = await _context.Products
                 .Include(p => p.Measurement)
                 .ToListAsync();
-            if (products != null)
+
+            if (products == null || products.Count == 0)
             {
                 return new RepoResponse<List<Product>>()
                 {
-                    Content = products,
-                    IsSuccess = true
+                    Content = null,
+                    IsSuccess = false,
+                    StatusCode = 404
                 };
             }
+
             return new RepoResponse<List<Product>>()
             {
-                Content = null,
-                IsSuccess = false,
-                StatusCode = 404
+                Content = products,
+                IsSuccess = true,
+                StatusCode = 200
             };
         }
 
@@ -48,6 +51,7 @@ namespace Acreator.Repositories
                 .Include(p => p.Measurement)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
+                
             return new RepoResponse<Product>()
             {
                 Content = product,
@@ -58,12 +62,9 @@ namespace Acreator.Repositories
 
         public async Task<RepoResponse<bool>> AddProduct([FromForm]ProductAddDto newProduct)
         {
-            string filePath = UploadImage(newProduct.Image, newProduct.Name);
-
-            newProduct.ImageUrl = filePath;
             var newP = new Product()
             {
-                ImageUrl = newProduct.ImageUrl,
+                ImageUrl = UploadImage(newProduct.Image, newProduct.Name),
                 Name = newProduct.Name,
                 Price = newProduct.Price,
                 Type = newProduct.Type,
