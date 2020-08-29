@@ -185,7 +185,11 @@ namespace Acreator.Repositories
                 if (file.Length > 0)
                 {
                     var oldFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    var fileName = string.Join('.', product_name.ToLower().Replace(' ', '_'), oldFileName.Split('.')[^1]);
+                    var fileName = string.Join(
+                        '.', 
+                        (product_name.ToLower() + DateTime.Now.ToShortTimeString()).Replace(' ', '_'),
+                        oldFileName.Split('.')[^1]
+                    );
                     var fullPath = Path.Combine(pathToSave, fileName);
                     var dbPath = Path.Combine(folderName, fileName);
 
