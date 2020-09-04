@@ -16,7 +16,7 @@ namespace Acreator.Controllers
         }
         
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromForm]Admin creds)
+        public async Task<IActionResult> Login(Admin creds)
         {
             var repoResponse = await _repo.Login(creds);
             Response.StatusCode = repoResponse.StatusCode;

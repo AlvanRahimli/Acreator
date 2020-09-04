@@ -61,7 +61,6 @@ namespace Acreator
                     };
                 });
                 
-            services.AddControllers();
 
             services.AddDbContext<AppDbContext>(options =>
             {
@@ -78,6 +77,8 @@ namespace Acreator
             services.AddScoped<IProductsRepo, ProductsRepo>();
             services.AddScoped<IAuthRepo, AuthRepo>();
             services.AddScoped<IOrdersRepo, OrdersRepo>();
+
+            services.AddControllers().AddNewtonsoftJson();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
