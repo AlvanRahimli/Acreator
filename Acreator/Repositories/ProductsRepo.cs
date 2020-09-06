@@ -45,6 +45,35 @@ namespace Acreator.Repositories
             };
         }
 
+        public async Task<RepoResponse<List<IdNamePair>>> GetBrief()
+        {
+            var products = await _context.Products
+                .AsNoTracking()
+                .Select(p => new IdNamePair()
+                {
+                    Id = p.Id,
+                    Name = p.Name
+                })
+                .ToListAsync();
+
+            if (products == null || products.Count == 0)
+            {
+                return new RepoResponse<List<IdNamePair>>()
+                {
+                    Content = null,
+                    IsSuccess = false,
+                    StatusCode = 404
+                };
+            }
+
+            return new RepoResponse<List<IdNamePair>>()
+            {
+                Content = products,
+                IsSuccess = true,
+                StatusCode = 200
+            };
+        }
+
         public async Task<RepoResponse<Product>> GetProduct(int id)
         {
             var product = await _context.Products
@@ -187,7 +216,7 @@ namespace Acreator.Repositories
                     var oldFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
                     var fileName = string.Join(
                         '.', 
-                        (product_name.ToLower() + DateTime.Now.ToShortTimeString()).Replace(' ', '_'),
+                        (product_name.ToLower() + (new Random()).Next(1000, 9999).ToString()).Replace(' ', '_'),
                         oldFileName.Split('.')[^1]
                     );
                     var fullPath = Path.Combine(pathToSave, fileName);

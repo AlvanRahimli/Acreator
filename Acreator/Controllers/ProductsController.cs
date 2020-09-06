@@ -66,6 +66,21 @@ namespace Acreator.Controllers
             return new JsonResult(new { error_code = repoResponse.StatusCode, status = 1 });
         }
 
+        [HttpGet("brief")]
+        [AllowAnonymous]
+        public async Task<JsonResult> GetBriefIdNamePairs()
+        {
+            var repoResponse = await _repo.GetBrief();
+
+            Response.StatusCode = repoResponse.StatusCode;
+            if (repoResponse.IsSuccess)
+            {
+                return new JsonResult(new { data = repoResponse.Content, status = 0 });
+            }
+
+            return new JsonResult(new { error_code = repoResponse.StatusCode, status = 1 });
+        }
+
         [HttpPost("new")]
         public async Task<IActionResult> AddProduct([FromForm] ProductAddDto p)
         {
