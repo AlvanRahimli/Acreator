@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Acreator.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20200821151335_initial")]
-    partial class initial
+    [Migration("20200909081428_ImagesAdded")]
+    partial class ImagesAdded
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,6 +37,26 @@ namespace Acreator.Migrations
                     b.ToTable("Admins");
                 });
 
+            modelBuilder.Entity("Acreator.Models.Image", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Alt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Purpose")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Images");
+                });
+
             modelBuilder.Entity("Acreator.Models.Measurement", b =>
                 {
                     b.Property<int>("Id")
@@ -52,6 +72,35 @@ namespace Acreator.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Measurements");
+                });
+
+            modelBuilder.Entity("Acreator.Models.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClientEmail")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClientName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClientPhone")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Acreator.Models.Order", b =>
@@ -93,6 +142,12 @@ namespace Acreator.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Desc")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("TEXT");

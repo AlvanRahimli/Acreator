@@ -36,9 +36,9 @@ namespace Acreator.Controllers
             return new JsonResult(new { error_code = repoResponse.StatusCode, status = 1 });
         }
 
-        [HttpGet("filter")]
+        [HttpGet("filter/{type}")]
         [AllowAnonymous]
-        public async Task<JsonResult> GetFiltered([FromQuery]ProductType type)
+        public async Task<JsonResult> GetFiltered(ProductType type)
         {
             var repoResponse = await _repo.GetFiltered(type);
 

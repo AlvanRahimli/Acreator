@@ -97,6 +97,8 @@ namespace Acreator.Repositories
                 Name = newProduct.Name,
                 Price = newProduct.Price,
                 Type = newProduct.Type,
+                Color = newProduct.Color,
+                Desc = newProduct.Desc,
                 Measurement = new Measurement()
                 {
                     Width = newProduct.Width,

@@ -77,6 +77,8 @@ namespace Acreator
             services.AddScoped<IProductsRepo, ProductsRepo>();
             services.AddScoped<IAuthRepo, AuthRepo>();
             services.AddScoped<IOrdersRepo, OrdersRepo>();
+            services.AddScoped<IMessagesRepo, MessagesRepo>();
+            services.AddScoped<IImagesRepo, ImagesRepo>();
 
             services.AddControllers().AddNewtonsoftJson();
         }

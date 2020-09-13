@@ -13,6 +13,8 @@ namespace Acreator.Models
         public string ImageUrl { get; set; }
         [Required]
         public ProductType Type { get; set; }
+        public string Color { get; set; }
+        public string Desc { get; set; }
         public IFormFile Image { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }

@@ -89,6 +89,7 @@ namespace Acreator.Repositories
         public async Task<RepoResponse<List<Order>>> GetFiltered(OrderStatus status)
         {
             var orders = await _context.Orders
+                .Include(o => o.Product)
                 .Where(p => p.Status == status)
                 .ToListAsync();
             
