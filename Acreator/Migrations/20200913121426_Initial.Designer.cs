@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Acreator.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20200909081428_ImagesAdded")]
-    partial class ImagesAdded
+    [Migration("20200913121426_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
