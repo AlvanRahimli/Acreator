@@ -61,5 +61,19 @@ namespace Acreator.Controllers
 
             return new JsonResult(new { data = repoResponse.Content, status = 0 });
         }
+
+        [HttpPost("delete")]
+        public async Task<IActionResult> DeleteImage(int id)
+        {
+            var repoResponse = await _repo.DeleteImage(id);
+
+            Response.StatusCode = repoResponse.StatusCode;
+            if (!repoResponse.IsSuccess)
+            {
+                return new JsonResult(new { error_code = repoResponse.StatusCode, status = 1 });
+            }
+
+            return new JsonResult(new { data = repoResponse.Content, status = 0 });
+        }
     }
 }

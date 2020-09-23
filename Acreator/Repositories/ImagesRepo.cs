@@ -52,6 +52,43 @@ namespace Acreator.Repositories
             };
         }
 
+        public async Task<RepoResponse<bool>> DeleteImage(int id)
+        {
+            var image = await _context.Images.FirstOrDefaultAsync(i => i.Id == id);
+
+            if (image != null)
+            {
+                _context.Remove(image);
+            }
+            else
+            {
+                return new RepoResponse<bool>()
+                {
+                    Content = false,
+                    IsSuccess = false,
+                    StatusCode = 404
+                };
+            }
+
+            var res = await _context.SaveChangesAsync();
+            if (res > 0)
+            {
+                return new RepoResponse<bool>()
+                {
+                    Content = true,
+                    IsSuccess = true,
+                    StatusCode = 200
+                };
+            }
+
+            return new RepoResponse<bool>()
+            {
+                Content = false,
+                IsSuccess = false,
+                StatusCode = 500
+            };
+        }
+
         public async Task<RepoResponse<List<Image>>> GetAll()
         {
             var images = await _context.Images.AsNoTracking().ToListAsync();
@@ -73,6 +110,8 @@ namespace Acreator.Repositories
                 StatusCode = 500
             };
         }
+
+        
 
         public async Task<RepoResponse<List<Image>>> GetFiltered(ImagePurpose purpose)
         {
@@ -106,7 +145,7 @@ namespace Acreator.Repositories
             {
                 var file = image;
                 var folderName = Path.Combine("Resources", "Images");
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                var pathToSave = Path.Combine("/var/www/data", folderName);
 
                 if (file.Length > 0)
                 {

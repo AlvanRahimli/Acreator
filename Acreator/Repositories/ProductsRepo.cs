@@ -211,7 +211,7 @@ namespace Acreator.Repositories
             {
                 var file = image;
                 var folderName = Path.Combine("Resources", "Images");
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                var pathToSave = Path.Combine("/var/www/data", folderName);
 
                 if (file.Length > 0)
                 {
@@ -235,8 +235,9 @@ namespace Acreator.Repositories
                     filePath = "no_image";
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine("ERROR: IMAGE_UPLAOD: {0}", ex.Message);
                 filePath = "image_upload_error";
             }
 

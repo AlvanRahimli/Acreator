@@ -9,6 +9,7 @@ namespace Acreator.Repositories
         Task<RepoResponse<List<Image>>> GetAll();
         Task<RepoResponse<List<Image>>> GetFiltered(ImagePurpose purpose);
         Task<RepoResponse<bool>> AddImage(ImageAddDto newImage);
+        Task<RepoResponse<bool>> DeleteImage(int id);
 
     }
 }

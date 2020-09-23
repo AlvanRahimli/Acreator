@@ -64,8 +64,8 @@ namespace Acreator
 
             services.AddDbContext<AppDbContext>(options =>
             {
-                // options.UseMySql(_config.GetConnectionString("MySql"));
-                options.UseSqlite("Data source=appdb.db");
+                options.UseMySql(_config.GetConnectionString("MySql"));
+                // options.UseSqlite("Data source=appdb.db");
             });
 
             services.Configure<FormOptions>(o => {
@@ -96,10 +96,12 @@ namespace Acreator
                 app.UseDeveloperExceptionPage();
             }
 
+            // app.UseHttpsRedirection();
+
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions()
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
+                FileProvider = new PhysicalFileProvider(Path.Combine("/var/www/data", @"Resources")),
                 RequestPath = new PathString("/Resources")
             });
 
@@ -111,7 +113,8 @@ namespace Acreator
             });
 	    
 
-	    app.UseCors("CorsPolicy");
+	        app.UseCors("CorsPolicy");
+
             app.UseAuthentication();
             app.UseAuthorization();
 
