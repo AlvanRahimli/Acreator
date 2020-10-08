@@ -35,17 +35,17 @@ namespace Acreator
         
         public void ConfigureServices(IServiceCollection services)
         {
-	    services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy", builder =>
+            services.AddCors(options =>
                 {
-                    builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .Build();
+                    options.AddPolicy("CorsPolicy", builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .Build();
+                    });
                 });
-            });
-		
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -60,12 +60,12 @@ namespace Acreator
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"]))
                     };
                 });
-                
+        
 
             services.AddDbContext<AppDbContext>(options =>
             {
-                options.UseMySql(_config.GetConnectionString("MySql"));
-                // options.UseSqlite("Data source=appdb.db");
+                // options.UseMySql(_config.GetConnectionString("MySql"));
+                options.UseSqlite("Data source=appdb.db");
             });
 
             services.Configure<FormOptions>(o => {
@@ -111,9 +111,8 @@ namespace Acreator
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
-	    
 
-	        app.UseCors("CorsPolicy");
+            app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();
