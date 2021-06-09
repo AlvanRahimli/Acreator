@@ -64,8 +64,8 @@ namespace Acreator
 
             services.AddDbContext<AppDbContext>(options =>
             {
-                // options.UseMySql(_config.GetConnectionString("MySql"));
-                options.UseSqlite("Data source=appdb.db");
+                options.UseMySql(_config.GetConnectionString("Default"));
+                // options.UseSqlite("Data source=appdb.db");
             });
 
             services.Configure<FormOptions>(o => {
